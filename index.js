@@ -82,7 +82,26 @@ async function run() {
 
     app.post("/users", async (req, res) => {
       const users = req.body;
-      const result = await usersCollection.insertOne(users);
+
+      const query = { email: users.email };
+      const isExisting = await usersCollection.findOne(query);
+
+      if (isExisting) {
+        return res.send({ insertedId: null });
+      }
+      let result = await usersCollection.insertOne(users);
+      res.send(result);
+    });
+
+    app.get("/users", async (req, res) => {
+      const result = await usersCollection.find().sort({ _id: -1 }).toArray();
+      res.send(result);
+    });
+
+    app.delete("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await usersCollection.deleteOne(query);
       res.send(result);
     });
 
