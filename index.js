@@ -26,8 +26,11 @@ async function run() {
     await client.connect();
 
     const menuCollection = client.db("bestroBoss").collection("menu");
+    const usersCollection = client.db("bestroBoss").collection("users");
     const reviewsCollection = client.db("bestroBoss").collection("reviews");
     const cartsCollection = client.db("bestroBoss").collection("carts");
+
+    // menu collection
 
     app.get("/menus", async (req, res) => {
       try {
@@ -37,6 +40,8 @@ async function run() {
         res.status(500).send({ message: "Error fetching menus", error });
       }
     });
+
+    // review collection
 
     app.get("/reviews", async (req, res) => {
       try {
@@ -70,6 +75,14 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await cartsCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    // users collection
+
+    app.post("/users", async (req, res) => {
+      const users = req.body;
+      const result = await usersCollection.insertOne(users);
       res.send(result);
     });
 
