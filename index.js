@@ -78,6 +78,22 @@ async function run() {
       res.send(result);
     });
 
+    // create asdmin api
+
+    app.patch("/users/admin/:id", async(req, res) => {
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const updateDoc = {
+        $set: {
+          role: 'Admin'
+        },
+      };
+
+      const result = await usersCollection.updateOne(query, updateDoc);
+
+      res.send(result)
+    })
+
     // users collection
 
     app.post("/users", async (req, res) => {
